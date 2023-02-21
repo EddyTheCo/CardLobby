@@ -18,7 +18,6 @@ qt6_add_qml_module(cardLobby
     QML_FILES
     qml/CardLobby.qml
     qml/OpponentDetail.qml
-    qml/window.qml
     RESOURCE_PREFIX
     "/esthertech.com/imports"
     OUTPUT_TARGETS out_targets_var
