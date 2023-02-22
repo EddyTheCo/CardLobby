@@ -19,7 +19,7 @@ qt6_add_qml_module(cardLobby
     qml/CardLobby.qml
     qml/OpponentDetail.qml
     RESOURCE_PREFIX
-    "/esthertech.com/imports"
+    "/esterVtech.com/imports"
     OUTPUT_TARGETS out_targets_var
     IMPORTS  bout_publisher players_model card_designs
     IMPORT_PATH
