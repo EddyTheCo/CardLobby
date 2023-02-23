@@ -4,7 +4,7 @@ import QtQuick
 import MyDesigns
 import nft_model
 import userSettings
-
+import card_designs
 
 import bout_publisher
 import players_model
@@ -16,7 +16,7 @@ MyFrame
     required property User_box opponent;
     required property NFT_model umodel;
     required property UserSetts usett;
-
+    backColor:"#1e1e1e"
     description: qsTr("Oponent details")
 
     MyPayPopUp
@@ -53,12 +53,10 @@ MyFrame
         }
     }
 
-
-
     ColumnLayout
     {
         id:opponentbox
-        anchors.fill: root_;
+        anchors.fill: parent;
         spacing:10
 
         UserDelegate
@@ -73,27 +71,28 @@ MyFrame
         ListView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.maximumHeight: 400
-            Layout.minimumHeight: 200
+            Layout.maximumHeight: 600
+            Layout.minimumHeight: 450
             Layout.minimumWidth:300
             orientation:ListView.Horizontal
             Layout.alignment: Qt.AlignHCenter
-
+            clip:true
             flickableDirection:Flickable.HorizontalFlick
 
             model: root_.opponent.nftmodel.gameCards
             delegate: SCardDelegate {
-                width:100
-                height:150
+                width:300
+                height:450
             }
         }
+
         MyButton
         {
             id:scards
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.maximumWidth: 250
-            Layout.maximumHeight: 100
+            Layout.maximumWidth: 150
+            Layout.maximumHeight: 75
             Layout.alignment: Qt.AlignHCenter
             text:qsTr("Let's duel")
             onClicked:{
@@ -106,33 +105,12 @@ MyFrame
                 {
                     objson.profpic=root_.usett.nftbox.nftid;
                 }
-                publisher.publish(objson,opponent.monitor.addr(),"Let's duel",-1000,true);
+                publisher.publish(objson,root_.opponent.monitor.addr,"Let's duel",[0,0,0],-1000);
 
             }
         }
 
     }
-
-
-    ListView {
-        id:playersview
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-
-        Layout.preferredWidth: 360
-        Layout.maximumWidth: 360
-        orientation:ListView.Vertical
-        Layout.alignment: Qt.AlignRight
-
-        flickableDirection:Flickable.VerticalFlick
-
-        model: playersmodel
-        delegate: PlayersDelegate {
-            width:playersview.width
-            height:playersview.height/4.0
-        }
-    }
-
 
 }
 
