@@ -8,6 +8,7 @@ import account
 import bout_monitor
 import bout_publisher
 import players_model
+import nodeConection
 
 MyFrame
 {
@@ -66,6 +67,7 @@ MyFrame
     Players_model
     {
         id:playersmodel
+        onSelected: (box) => oponentdetail.opponent=box;
     }
 
     RowLayout
@@ -86,6 +88,7 @@ MyFrame
             spacing:20
             OpponentDetail
             {
+                id:oponentdetail
                 umodel:root_.umodel
                 usett:root_.usett
                 opponent:null
@@ -106,16 +109,18 @@ MyFrame
                 Layout.alignment: Qt.AlignHCenter
                 text:qsTr("I want to play")
                 onClicked:{
-                    console.log()
+
                     var objson={
-                        "cards": root_.umodel.getCardIds(),
+                        "cards": root_.umodel.gameCards.getCardIds(),
                         "username":root_.usett.username
                     };
+                     console.log(objson)
                     if(root_.usett.nftbox)
                     {
                         objson.profpic=root_.usett.nftbox.nftid;
                     }
-                    publisher.publish(objson,Account.addr([0,0,0]),"iwantoplaycards",[0,0,0],-1000,true);
+                    console.log(objson)
+                    publisher.publish(objson,Account.addr([0,0,0]),"iwantoplaycards",[0,0,0],-1000);
                 }
             }
 
