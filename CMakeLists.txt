@@ -21,11 +21,16 @@ qt6_add_qml_module(cardLobby
     RESOURCE_PREFIX
     "/esterVtech.com/imports"
     OUTPUT_TARGETS out_targets_var
-    IMPORTS  bout_publisher players_model card_designs
+    IMPORTS  bout_publisher players_model card_designs MyDesigns bout_monitor nft_model userSettings account
     IMPORT_PATH
+    ${CMAKE_BINARY_DIR}/_deps/mydesigns-build
     ${CMAKE_BINARY_DIR}/_deps/bout_publisher-build
     ${CMAKE_BINARY_DIR}/_deps/players_model-build
     ${CMAKE_BINARY_DIR}/_deps/card_designs-build
+    ${CMAKE_BINARY_DIR}/_deps/bout_monitor-build
+    ${CMAKE_BINARY_DIR}/_deps/nft_model-build
+    ${CMAKE_BINARY_DIR}/_deps/account-build
+    ${CMAKE_BINARY_DIR}/_deps/usersettings-build
     OUTPUT_DIRECTORY
        ${CMAKE_CURRENT_BINARY_DIR}/cardLobby
 )

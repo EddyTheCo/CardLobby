@@ -16,7 +16,6 @@ MyFrame
     required property User_box opponent;
     required property NFT_model umodel;
     required property UserSetts usett;
-    required property bool isduel;
     backColor:"#1e1e1e"
     description: qsTr("Oponent details")
 
@@ -92,7 +91,7 @@ MyFrame
             Layout.maximumWidth: 150
             Layout.maximumHeight: 75
             Layout.alignment: Qt.AlignHCenter
-            text:(isduel)?qsTr("Accept duel"):qsTr("Let's duel")
+            text:(root_.opponent.isduel)?qsTr("Accept duel"):qsTr("Let's duel")
             onClicked:{
                 var outid=root_.opponent.id();
                 var objson={
