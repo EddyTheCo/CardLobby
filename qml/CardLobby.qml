@@ -16,7 +16,20 @@ MyFrame
     required property NFT_model umodel;
     required property UserSetts usett;
     description: qsTr("Game Lobby")
+    Connections {
+        target: Account
 
+        function onSeedChanged() {
+            fundsmonitor.restart();
+            fundsmonitor.addr=Account.addr([0, 0, 0]);
+            if(fundsmonitor.init)
+            {
+                fundsmonitor.addressMonitor();
+            }
+            duelmonitor.restart();
+            duelmonitor.addr=Account.addr([0, 0, 0]);
+        }
+    }
 
     MyPayPopUp
     {
@@ -29,45 +42,56 @@ MyFrame
     }
     BoutMonitor{
         id:playersmonitor_
-        connection: Node_Conection
         tag:"iwantoplaycards"
-        onReady:
+        rpeat:10000
+        createdAfter: new Date()
+        Component.onCompleted:
         {
-
-            console.log("Ready");
-            playersmodel.add_monitor(playersmonitor_);
             playersmonitor_.restMonitor();
         }
     }
     BoutMonitor{
         id:fundsmonitor
-        connection: Node_Conection
-        onReady:
+        property bool init:false
+        addr:Account.addr([0,0,0]);
+        Component.onCompleted:
         {
-            fundsmonitor.addr=Account.addr([0,0,0]);
+            fundsmonitor.addressMonitor();
+            fundsmonitor.init=true;
         }
         onGotNewBout:
         {
             paypopup.visible=false;
         }
-
+    }
+    BoutMonitor{
+        id:duelmonitor
+        addr:Account.addr([0,0,0]);
+        tag:"letsduel"
+        rpeat:10000
     }
     BoutPublisher
     {
         id:publisher
-        connection: Node_Conection
-        account: Account
         onNotenoughFunds: function (amount) {
-            paypopup.addr_=Account.addr([0,0,0]);
+            paypopup.addr_=Account.addr_bech32([0,0,0]);
             paypopup.descr_=qsTr("Transfer at least "+ amount + " to \n" +paypopup.addr_);
             paypopup.visible=true;
-            fundsmonitor.eventMonitor();
+
         }
     }
     Players_model
     {
         id:playersmodel
         onSelected: (box) => oponentdetail.opponent=box;
+        Component.onCompleted:
+        {
+            playersmodel.add_monitor(playersmonitor_,Account.addr([0,0,0]));
+            playersmodel.add_monitor(duelmonitor,Account.addr([0,0,0]));
+            playersmonitor_.restMonitor();
+        }
+
+
     }
 
     RowLayout
@@ -114,12 +138,11 @@ MyFrame
                         "cards": root_.umodel.gameCards.getCardIds(),
                         "username":root_.usett.username
                     };
-                     console.log(objson)
                     if(root_.usett.nftbox)
                     {
                         objson.profpic=root_.usett.nftbox.nftid;
                     }
-                    console.log(objson)
+
                     publisher.publish(objson,Account.addr([0,0,0]),"iwantoplaycards",[0,0,0],-1000);
                 }
             }

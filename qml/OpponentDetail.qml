@@ -16,6 +16,7 @@ MyFrame
     required property User_box opponent;
     required property NFT_model umodel;
     required property UserSetts usett;
+    required property bool isduel;
     backColor:"#1e1e1e"
     description: qsTr("Oponent details")
 
@@ -30,10 +31,10 @@ MyFrame
     }
     BoutMonitor{
         id:fundsmonitor
-        connection: Node_Conection
-        onReady:
+        addr:Account.addr([0,0,0]);
+        Component.onCompleted:
         {
-            fundsmonitor.addr=Account.addr([0,0,0]);
+            fundsmonitor.addressMonitor();
         }
         onGotNewBout:
         {
@@ -43,13 +44,10 @@ MyFrame
     BoutPublisher
     {
         id:publisher
-        connection: Node_Conection
-        account: Account
         onNotenoughFunds: function (amount) {
-            paypopup.addr_=Account.addr([0,0,0]);
+            paypopup.addr_=Account.addr_bech32([0,0,0]);
             paypopup.descr_=qsTr("Transfer at least "+ amount + " to \n" +paypopup.addr_);
             paypopup.visible=true;
-            fundsmonitor.eventMonitor();
         }
     }
 
@@ -94,18 +92,21 @@ MyFrame
             Layout.maximumWidth: 150
             Layout.maximumHeight: 75
             Layout.alignment: Qt.AlignHCenter
-            text:qsTr("Let's duel")
+            text:(isduel)?qsTr("Accept duel"):qsTr("Let's duel")
             onClicked:{
-
+                var outid=root_.opponent.id();
                 var objson={
                     "cards": root_.umodel.gameCards.getCardIds(),
-                    "username":root_.usett.username
+                    "username":root_.usett.username,
+                    "outid": outid
                 };
                 if(root_.usett.nftbox)
                 {
                     objson.profpic=root_.usett.nftbox.nftid;
                 }
-                publisher.publish(objson,root_.opponent.monitor.addr,"Let's duel",[0,0,0],-1000);
+
+                publisher.publish(objson,root_.opponent.monitor.addr,"letsduel",[0,0,0],-1000);
+                scards.enabled=false;
 
             }
         }
