@@ -13,8 +13,6 @@ include(local_conf.cmake OPTIONAL)
 qt6_add_qml_module(cardLobby
     URI  cardLobby
     VERSION 1.0
-    SOURCES
-    include/
     QML_FILES
     qml/CardLobby.qml
     qml/OpponentDetail.qml
