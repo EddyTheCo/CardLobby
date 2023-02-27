@@ -1,6 +1,6 @@
 import QtQuick.Layouts
 import QtQuick.Controls
-import QtQuick
+import QtQuick 2.0
 import MyDesigns
 import nft_model
 import userSettings
@@ -16,9 +16,10 @@ MyFrame
     required property User_box opponent;
     required property NFT_model umodel;
     required property UserSetts usett;
+    required property Players_model playersmodel
     backColor:"#1e1e1e"
     description: qsTr("Oponent details")
-
+    visible:(opponent!=null)
     MyPayPopUp
     {
         id:paypopup
@@ -40,6 +41,7 @@ MyFrame
             paypopup.visible=false;
         }
     }
+
     BoutPublisher
     {
         id:publisher
@@ -93,18 +95,31 @@ MyFrame
             Layout.alignment: Qt.AlignHCenter
             text:(root_.opponent.isduel)?qsTr("Accept duel"):qsTr("Let's duel")
             onClicked:{
-                var outid=root_.opponent.id();
-                var objson={
-                    "cards": root_.umodel.gameCards.getCardIds(),
-                    "username":root_.usett.username,
-                    "outid": outid
-                };
-                if(root_.usett.nftbox)
+                root_.playersmodel.opponentid=root_.opponent.id();
+                if(root_.opponent.isduel)
                 {
-                    objson.profpic=root_.usett.nftbox.nftid;
+                    var objson1={
+                        "message": "You have no chance"
+                    };
+                    publisher.publish(objson1,root_.opponent.monitor.addr,"duelaccepted",[0,0,0],-1000);
                 }
+                else
+                {
 
-                publisher.publish(objson,root_.opponent.monitor.addr,"letsduel",[0,0,0],-1000);
+                    var outid=root_.opponent.id();
+                    var objson2={
+                        "cards": root_.umodel.gameCards.getCardIds(),
+                        "username":root_.usett.username,
+                        "outid": outid
+                    };
+                    if(root_.usett.nftbox)
+                    {
+                        objson2.profpic=root_.usett.nftbox.nftid;
+                    }
+
+                    publisher.publish(objson2,root_.opponent.monitor.addr,"letsduel",[0,0,0],-1000);
+
+                }
                 scards.enabled=false;
 
             }
