@@ -116,6 +116,7 @@ MyFrame
                 umodel:root_.umodel
                 usett:root_.usett
                 opponent:null
+                playersmodel:playersmodel
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.minimumWidth: 360
