@@ -46,7 +46,7 @@ MyFrame
     {
         id:publisher
         onNotenoughFunds: function (amount) {
-            paypopup.addr_=Account.addr_bech32([0,0,0]);
+            paypopup.addr_=Account.addr_bech32([0,0,0],Node_Conection.info().protocol.bech32Hrp);
             paypopup.descr_=qsTr("Transfer at least "+ amount + " to \n" +paypopup.addr_);
             paypopup.visible=true;
         }
