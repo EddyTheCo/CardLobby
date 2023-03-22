@@ -13,8 +13,8 @@ import nodeConection
 MyFrame
 {
     id:root_
-    required property NFT_model umodel;
-    required property UserSetts usett;
+    required property User_box ubox;
+
     description: qsTr("Game Lobby")
     Connections {
         target: Account
@@ -22,12 +22,14 @@ MyFrame
         function onSeedChanged() {
             fundsmonitor.restart();
             fundsmonitor.addr=Account.addr([0, 0, 0]);
-            if(fundsmonitor.init)
-            {
-                fundsmonitor.addressMonitor();
-            }
-            duelmonitor.restart();
-            duelmonitor.addr=Account.addr([0, 0, 0]);
+            fundsmonitor.addressMonitor();
+            playersmodel.restart();
+        }
+    }
+    Connections {
+        target: Node_Conection
+        function onStateChanged() {
+            fundsmonitor.restart();
         }
     }
 
@@ -40,57 +42,30 @@ MyFrame
         closePolicy: Popup.CloseOnPressOutside
         anchors.centerIn: Overlay.overlay
     }
-    BoutMonitor{
-        id:playersmonitor_
-        tag:"iwantoplaycards"
-        rpeat:10000
-        createdAfter: new Date()
-        Component.onCompleted:
-        {
-            playersmonitor_.restMonitor();
-        }
-    }
+
     BoutMonitor{
         id:fundsmonitor
-        property bool init:false
+
         addr:Account.addr([0,0,0]);
-        Component.onCompleted:
-        {
-            fundsmonitor.addressMonitor();
-            fundsmonitor.init=true;
-        }
         onGotNewBout:
         {
             paypopup.visible=false;
         }
     }
-    BoutMonitor{
-        id:duelmonitor
-        addr:Account.addr([0,0,0]);
-        tag:"letsduel"
-        rpeat:10000
-    }
+
     BoutPublisher
     {
         id:publisher
         onNotenoughFunds: function (amount) {
             paypopup.addr_=Account.addr_bech32([0,0,0],Node_Conection.info().protocol.bech32Hrp);
-            paypopup.descr_=qsTr("Transfer at least "+ amount + " to \n" +paypopup.addr_);
+            paypopup.descr_=qsTr("Transfer at least "+ amount + " "+ Node_Conection.info().baseToken.subunit + " to \n" +paypopup.addr_);
             paypopup.visible=true;
-
         }
     }
     Players_model
     {
         id:playersmodel
         onSelected: (box) => oponentdetail.opponent=box;
-        Component.onCompleted:
-        {
-            playersmodel.add_monitor(playersmonitor_,Account.addr([0,0,0]));
-            playersmodel.add_monitor(duelmonitor,Account.addr([0,0,0]));
-            playersmonitor_.restMonitor();
-        }
-
 
     }
 
