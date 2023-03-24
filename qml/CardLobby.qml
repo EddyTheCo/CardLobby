@@ -30,6 +30,7 @@ MyFrame
         target: Node_Conection
         function onStateChanged() {
             fundsmonitor.restart();
+            playersmodel.restart();
         }
     }
 
@@ -88,9 +89,10 @@ MyFrame
             OpponentDetail
             {
                 id:oponentdetail
-                umodel:root_.umodel
-                usett:root_.usett
+                player:root_.ubox
                 opponent:null
+                paypopup:paypopup
+                publisher:publisher
                 playersmodel:playersmodel
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -111,15 +113,15 @@ MyFrame
                 onClicked:{
 
                     var objson={
-                        "cards": root_.umodel.gameCards.getCardIds(),
-                        "username":root_.usett.username
+                        "cards": root_.ubox.nftmodel.gameCards.getCardIds(),
+                        "username":root_.ubox.player.username
                     };
-                    if(root_.usett.nftbox)
+                    if(root_.ubox.player.nftbox)
                     {
-                        objson.profpic=root_.usett.nftbox.nftid;
+                        objson.profpic=root_.ubox.player.nftbox.nftid;
                     }
 
-                    publisher.publish(objson,Account.addr([0,0,0]),"iwantoplaycards",[0,0,0],-1000);
+                    publisher.publish(objson,Account.addr([0,0,0]),"iwantoplaycards",[0,0,0],-10000);
                 }
             }
 

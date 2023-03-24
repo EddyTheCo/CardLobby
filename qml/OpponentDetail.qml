@@ -14,43 +14,14 @@ MyFrame
 {
     id:root_
     required property User_box opponent;
-    required property NFT_model umodel;
-    required property UserSetts usett;
-    required property Players_model playersmodel
+    required property User_box player;
+    required property Players_model playersmodel;
+    required property MyPayPopUp paypopup;
+    required property BoutPublisher publisher;
     backColor:"#1e1e1e"
     description: qsTr("Oponent details")
     visible:(opponent!=null)
-    MyPayPopUp
-    {
-        id:paypopup
-        addr_:""
-        descr_:""
-        visible:false
-        closePolicy: Popup.CloseOnPressOutside
-        anchors.centerIn: Overlay.overlay
-    }
-    BoutMonitor{
-        id:fundsmonitor
-        addr:Account.addr([0,0,0]);
-        Component.onCompleted:
-        {
-            fundsmonitor.addressMonitor();
-        }
-        onGotNewBout:
-        {
-            paypopup.visible=false;
-        }
-    }
 
-    BoutPublisher
-    {
-        id:publisher
-        onNotenoughFunds: function (amount) {
-            paypopup.addr_=Account.addr_bech32([0,0,0],Node_Conection.info().protocol.bech32Hrp);
-            paypopup.descr_=qsTr("Transfer at least "+ amount + " to \n" +paypopup.addr_);
-            paypopup.visible=true;
-        }
-    }
 
     ColumnLayout
     {
@@ -93,31 +64,31 @@ MyFrame
             Layout.maximumWidth: 150
             Layout.maximumHeight: 75
             Layout.alignment: Qt.AlignHCenter
-            text:(root_.opponent.isduel)?qsTr("Accept duel"):qsTr("Let's duel")
+            text:(root_.opponent.jsob.isduel)?qsTr("Accept duel"):qsTr("Let's duel")
             onClicked:{
-                root_.playersmodel.opponentid=root_.opponent.id();
-                if(root_.opponent.isduel)
+                root_.playersmodel.opponentid=root_.opponent.jsob.id;
+                if(root_.opponent.jsob.isduel)
                 {
                     var objson1={
                         "message": "You have no chance"
                     };
-                    publisher.publish(objson1,root_.opponent.monitor.addr,"duelaccepted",[0,0,0],-1000);
+                    publisher.publish(objson1,root_.opponent.addr,"duelaccepted",[0,0,0],-1000);
                 }
                 else
                 {
 
-                    var outid=root_.opponent.id();
+                    var outid=root_.opponent.jsob.id;
                     var objson2={
-                        "cards": root_.umodel.gameCards.getCardIds(),
-                        "username":root_.usett.username,
+                        "cards": root_.player.nftmodel.gameCards.getCardIds(),
+                        "username":root_.player.player.username,
                         "outid": outid
                     };
-                    if(root_.usett.nftbox)
+                    if(root_.player.player.nftbox)
                     {
-                        objson2.profpic=root_.usett.nftbox.nftid;
+                        objson2.profpic=root_.player.player.nftbox;
                     }
 
-                    publisher.publish(objson2,root_.opponent.monitor.addr,"letsduel",[0,0,0],-1000);
+                    publisher.publish(objson2,root_.opponent.addr,"letsduel",[0,0,0],-1000);
 
                 }
                 scards.enabled=false;
