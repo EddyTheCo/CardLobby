@@ -64,10 +64,10 @@ MyFrame
             Layout.maximumWidth: 150
             Layout.maximumHeight: 75
             Layout.alignment: Qt.AlignHCenter
-            text:(root_.opponent.jsob.isduel)?qsTr("Accept duel"):qsTr("Let's duel")
+            text:(root_.opponent.jsob.duel)?qsTr("Accept duel"):qsTr("Let's duel")
             onClicked:{
                 root_.playersmodel.opponentid=root_.opponent.jsob.id;
-                if(root_.opponent.jsob.isduel)
+                if(root_.opponent.jsob.duel)
                 {
                     var objson1={
                         "message": "You have no chance"
